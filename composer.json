@@ -1,0 +1,13 @@
+{
+    "name": "josscoder/pmmp-workspace",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Josscoder",
+            "email": "josscoder@hotmail.com"
+        }
+    ]
+    "require": {
+        "pocketmine/pocketmine-mp": "5.*"
+    }
+}

@@ -1,0 +1,16 @@
+services:
+  pmmp-server:
+    image: pmmp/pocketmine-mp
+    ports:
+      - "19132:19132/udp"
+    environment:
+      POCKETMINE_PLUGINS: "DevTools:1.17.1"
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    volumes:
+      - "./data:/data"
+      - "./plugins:/plugins"
+volumes:
+  data: {}
+  plugins: {}

@@ -1,0 +1,5 @@
+name: SuperPickaxe
+main: SuperPickaxe\SuperPickaxePlugin
+src-namespace-prefix: SuperPickaxe
+version: 1.0.0
+api: 5.17.0
