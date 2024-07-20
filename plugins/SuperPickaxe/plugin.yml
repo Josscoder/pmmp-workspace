@@ -1,5 +1,11 @@
 name: SuperPickaxe
 main: SuperPickaxe\SuperPickaxePlugin
+author: Josscoder
+description: Plugin to help ImReDuZ
 src-namespace-prefix: SuperPickaxe
 version: 1.0.0
 api: 5.17.0
+
+permissions:
+  superpickaxe.radius.command:
+    default: op
