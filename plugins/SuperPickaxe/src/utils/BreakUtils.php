@@ -11,6 +11,7 @@ class BreakUtils
 {
     public static function breakArea(?Player $player, AxisAlignedBB $collidedBox, int $radius): void
     {
+        $radius = ($radius - 1); //adjust the radius
         $newBox = $collidedBox->expandedCopy($radius, $radius, $radius);
 
         $minX = floor($newBox->minX);
