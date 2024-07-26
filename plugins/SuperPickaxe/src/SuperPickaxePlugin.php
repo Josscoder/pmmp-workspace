@@ -2,6 +2,9 @@
 
 namespace SuperPickaxe;
 
+use pocketmine\math\AxisAlignedBB;
+use pocketmine\math\Vector3;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
@@ -12,7 +15,7 @@ class SuperPickaxePlugin extends PluginBase
 {
     use SingletonTrait;
 
-    private int $radius = 3;
+    private int $defaultRadius = 3;
 
     protected function onLoad(): void
     {
@@ -32,13 +35,39 @@ class SuperPickaxePlugin extends PluginBase
         $this->getLogger()->info(TextFormat::RED . 'SuperPickaxe Plugin Disabled');
     }
 
-    public function getRadius(): int
+    public function getDefaultRadius(): int
     {
-        return $this->radius;
+        return $this->defaultRadius;
     }
 
-    public function setRadius(int $radius): void
+    public function setDefaultRadius(int $defaultRadius): void
     {
-        $this->radius = $radius;
+        $this->defaultRadius = $defaultRadius;
+    }
+
+    public function breakArea(?Player $player, AxisAlignedBB $collidedBox, int $radius): void
+    {
+        $radius = ($radius - 1); //adjust the radius
+        $newBox = $collidedBox->expandedCopy($radius, $radius, $radius);
+
+        $minX = floor($newBox->minX);
+        $minY = floor($newBox->minY);
+        $minZ = floor($newBox->minZ);
+
+        $maxX = floor($newBox->maxX);
+        $maxY = floor($newBox->maxY);
+        $maxZ = floor($newBox->maxZ);
+
+        for ($x = $minX; $x <= $maxX; $x++) {
+            for ($y = $minY; $y <= $maxY; $y++) {
+                for ($z = $minZ; $z <= $maxZ; $z++) {
+                    if (is_null($player) || !$player->isOnline()) {
+                        break;
+                    }
+
+                    $player->breakBlock(new Vector3($x, $y, $z));
+                }
+            }
+        }
     }
 }

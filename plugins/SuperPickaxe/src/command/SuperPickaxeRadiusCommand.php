@@ -13,9 +13,9 @@ class SuperPickaxeRadiusCommand extends Command
     {
         parent::__construct(
             'superpickaxeradius',
-            'Change the radius of the super pickaxe',
+            'Change the default radius of the super pickaxe',
             '/%s <radius>',
-            ['spa']
+            ['spar']
         );
 
         $this->setPermission('superpickaxe.radius.command');
@@ -30,8 +30,8 @@ class SuperPickaxeRadiusCommand extends Command
         }
 
         $radius = intval($args[0]);
-        SuperPickaxePlugin::getInstance()->setRadius($radius);
+        SuperPickaxePlugin::getInstance()->setDefaultRadius($radius);
 
-        $sender->sendMessage(TextFormat::GREEN . sprintf("Radius changed to %s", $radius));
+        $sender->sendMessage(TextFormat::GREEN . sprintf("Default Pickaxe radius changed to %s", $radius));
     }
 }

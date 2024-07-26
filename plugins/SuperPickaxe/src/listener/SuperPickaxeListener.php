@@ -6,10 +6,9 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\item\Pickaxe;
-use pocketmine\utils\TextFormat;
+use pocketmine\player\Player;
+use SuperPickaxe\data\PickaxeRadiusIdMap;
 use SuperPickaxe\SuperPickaxePlugin;
-use SuperPickaxe\utils\BreakUtils;
-use SuperPickaxe\utils\TimeUtils;
 
 class SuperPickaxeListener implements Listener
 {
@@ -19,28 +18,33 @@ class SuperPickaxeListener implements Listener
     {
         $player = $event->getPlayer();
 
-        if (!($event->getItem() instanceof Pickaxe) || isset($this->breaking[$player->getName()])) { //Using array breaking to avoid recursion
+        $item = $event->getItem();
+
+        if (!($item instanceof Pickaxe) || in_array($player->getName(), $this->breaking)) { //Using array breaking to avoid recursion
             return;
         }
 
-        $this->breaking[$player->getName()] = TimeUtils::getCurrentTimestamp();
+        $this->breaking[] = $player->getName();
+
+        $core = SuperPickaxePlugin::getInstance();
 
         foreach ($event->getBlock()->getCollisionBoxes() as $box) {
-            BreakUtils::breakArea($player, $box, SuperPickaxePlugin::getInstance()->getRadius());
+            $core->breakArea($player, $box, PickaxeRadiusIdMap::getInstance()->fromId($item->getTypeId()));
         }
 
-        $passedTime = (TimeUtils::getCurrentTimestamp() - $this->breaking[$player->getName()]);
-        unset($this->breaking[$player->getName()]);
-
-        $player->sendMessage(TextFormat::GREEN . sprintf('The process took %d milliseconds!', $passedTime));
+        $this->removeFromBreakingArray($player);
     }
 
     public function onQuit(PlayerQuitEvent $event): void
     {
-        $player = $event->getPlayer();
+        $this->removeFromBreakingArray($event->getPlayer());
+    }
 
-        if (isset($this->breaking[$player->getName()])) {
-            unset($this->breaking[$player->getName()]);
+    private function removeFromBreakingArray(Player $player): void
+    {
+        $key = array_search($player->getName(), $this->breaking);
+        if ($key !== false) {
+            unset($this->breaking[$key]);
         }
     }
 }
